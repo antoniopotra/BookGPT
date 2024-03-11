@@ -1,6 +1,6 @@
 package software.design.gamegpt.service;
 
-import software.design.gamegpt.entity.User;
+import software.design.gamegpt.model.User;
 
 import java.util.List;
 

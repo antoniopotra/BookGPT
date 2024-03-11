@@ -6,7 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import software.design.gamegpt.entity.User;
+import software.design.gamegpt.model.User;
 import software.design.gamegpt.service.UserService;
 import software.design.gamegpt.validation.Validator;
 
@@ -20,11 +20,6 @@ public class AuthController {
 
     public AuthController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/index")
-    public String home() {
-        return "index";
     }
 
     @GetMapping("/register")

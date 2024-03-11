@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import software.design.gamegpt.entity.Role;
-import software.design.gamegpt.entity.User;
+import software.design.gamegpt.model.Role;
+import software.design.gamegpt.model.User;
 import software.design.gamegpt.repository.UserRepository;
 
 import java.util.Collection;

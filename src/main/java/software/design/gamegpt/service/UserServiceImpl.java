@@ -2,8 +2,8 @@ package software.design.gamegpt.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import software.design.gamegpt.entity.Role;
-import software.design.gamegpt.entity.User;
+import software.design.gamegpt.model.Role;
+import software.design.gamegpt.model.User;
 import software.design.gamegpt.repository.RoleRepository;
 import software.design.gamegpt.repository.UserRepository;
 

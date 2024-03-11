@@ -9,6 +9,7 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
 
   <body>
@@ -43,8 +44,18 @@
     <br /><br />
     <div class="container">
       <div class="row">
-        <h1 class="text-center">AI, ce m-aș juca ceva!</h1>
+          <h1 class="text-center">AI, <span id="alternating">for game recommendations!</span></h1>
       </div>
     </div>
+
+    <script type="text/javascript">
+        (function () {
+            let words = ["for game recommendations.", "ce-aș juca ceva!"], i = 0;
+            setInterval(function(){ $('#alternating').fadeOut(function () {
+                i = (i + 1) % words.length;
+                $(this).html(words[i]).fadeIn();
+            }); }, 5000)
+        })();
+    </script>
   </body>
 </html>
