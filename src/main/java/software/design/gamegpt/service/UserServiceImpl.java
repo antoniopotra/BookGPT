@@ -1,10 +1,10 @@
-package software.design.bookgpt.service;
+package software.design.gamegpt.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import software.design.bookgpt.entity.User;
-import software.design.bookgpt.repository.RoleRepository;
-import software.design.bookgpt.repository.UserRepository;
+import software.design.gamegpt.entity.User;
+import software.design.gamegpt.repository.RoleRepository;
+import software.design.gamegpt.repository.UserRepository;
 
 import java.util.List;
 

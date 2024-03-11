@@ -1,4 +1,4 @@
-package software.design.bookgpt.entity;
+package software.design.gamegpt.entity;
 
 import jakarta.persistence.*;
 

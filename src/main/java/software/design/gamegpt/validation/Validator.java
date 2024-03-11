@@ -1,4 +1,4 @@
-package software.design.bookgpt.validation;
+package software.design.gamegpt.validation;
 
 public class Validator {
     private final String pattern;

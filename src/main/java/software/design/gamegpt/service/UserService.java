@@ -1,6 +1,6 @@
-package software.design.bookgpt.service;
+package software.design.gamegpt.service;
 
-import software.design.bookgpt.entity.User;
+import software.design.gamegpt.entity.User;
 
 import java.util.List;
 

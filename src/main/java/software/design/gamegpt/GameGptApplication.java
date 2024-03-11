@@ -1,13 +1,13 @@
-package software.design.bookgpt;
+package software.design.gamegpt;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BookGptApplication {
+public class GameGptApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BookGptApplication.class, args);
+        SpringApplication.run(GameGptApplication.class, args);
     }
 
 }

@@ -1,10 +1,10 @@
-package software.design.bookgpt;
+package software.design.gamegpt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class BookGptApplicationTests {
+class GameGptApplicationTests {
 
     @Test
     void contextLoads() {

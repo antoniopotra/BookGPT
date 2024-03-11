@@ -1,4 +1,4 @@
-package software.design.bookgpt.controller;
+package software.design.gamegpt.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,9 +6,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import software.design.bookgpt.entity.User;
-import software.design.bookgpt.service.UserService;
-import software.design.bookgpt.validation.Validator;
+import software.design.gamegpt.entity.User;
+import software.design.gamegpt.service.UserService;
+import software.design.gamegpt.validation.Validator;
 
 import java.util.List;
 

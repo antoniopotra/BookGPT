@@ -1,4 +1,4 @@
-package software.design.bookgpt.service;
+package software.design.gamegpt.service;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -6,9 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import software.design.bookgpt.entity.Role;
-import software.design.bookgpt.entity.User;
-import software.design.bookgpt.repository.UserRepository;
+import software.design.gamegpt.entity.Role;
+import software.design.gamegpt.entity.User;
+import software.design.gamegpt.repository.UserRepository;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
