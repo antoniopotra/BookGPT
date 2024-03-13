@@ -1,19 +1,29 @@
 package software.design.gamegpt.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import software.design.gamegpt.repository.IgdbRepository;
+import software.design.gamegpt.model.Game;
+import software.design.gamegpt.service.GameService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class GamesController {
-    private final IgdbRepository igdbRepository = new IgdbRepository();
+    private final GameService gameService;
+    private List<Game> games = new ArrayList<>();
+
+    public GamesController(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @GetMapping("/index")
-    public String home() {
-//        for (Game game : igdbRepository.getGames()) {
-//            System.out.println(game.name());
-//        }
-        System.out.println(igdbRepository.getGames());
+    public String home(Model model) {
+        if (games.isEmpty()) {
+            games = gameService.getGames();
+        }
+        model.addAttribute("games", games);
         return "index";
     }
 }

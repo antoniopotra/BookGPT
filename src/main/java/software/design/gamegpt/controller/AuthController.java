@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import software.design.gamegpt.model.User;
 import software.design.gamegpt.service.UserService;
-import software.design.gamegpt.validation.Validator;
+import software.design.gamegpt.utils.Validator;
 
 import java.util.List;
 

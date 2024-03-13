@@ -1,61 +1,76 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8"/>
     <title>Home</title>
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
     />
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  </head>
+    <link href="../../resources/static/css/index.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/index.js"></script>
+</head>
 
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
         <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
         <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a
-                class="nav-link active"
-                aria-current="page"
-                th:href="@{/logout}"
-                >Logout</a
-              >
-            </li>
-          </ul>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a
+                            class="nav-link active"
+                            aria-current="page"
+                            th:href="@{/logout}"
+                    >Logout</a
+                    >
+                </li>
+            </ul>
         </div>
-      </div>
-    </nav>
-    <br /><br />
-    <div class="container">
-      <div class="row">
-          <h1 class="text-center">AI, <span id="alternating">for game recommendations!</span></h1>
-      </div>
     </div>
+</nav>
+<br/><br/>
+<div class="container">
+    <div class="row">
+        <h1 class="text-center">AI<span id="alternating"> for game recommendations.</span></h1>
+    </div>
+    <div class="container-fluid">
+        <div class="px-lg-4">
+            <div class="row py-4">
+                <h3>Browse games</h3>
+            </div>
 
-    <script type="text/javascript">
-        (function () {
-            let words = ["for game recommendations.", "ce-aș juca ceva!"], i = 0;
-            setInterval(function(){ $('#alternating').fadeOut(function () {
-                i = (i + 1) % words.length;
-                $(this).html(words[i]).fadeIn();
-            }); }, 5000)
-        })();
-    </script>
-  </body>
+            <div class="row">
+                <div th:each="game: ${games}" class="col-xl-2 col-lg-3 col-md-5 mb-3">
+                    <div class="bg-white rounded shadow-sm">
+                        <a th:href="${game.url}">
+                            <img th:src="${game.cover}" alt=""
+                                 class="img-fluid card-img-top">
+                        </a>
+                        <div class="p-3">
+                            <h5 th:text="${game.name}"></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="py-4 text-right"><a href="#" class="btn btn-dark px-4 py-2 text-uppercase">Show me more</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 </html>
