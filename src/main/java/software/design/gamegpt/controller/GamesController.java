@@ -12,7 +12,7 @@ import java.util.List;
 @Controller
 public class GamesController {
     private final GameService gameService;
-    private List<Game> games = new ArrayList<>();
+    private final List<Game> games = new ArrayList<>();
 
     public GamesController(GameService gameService) {
         this.gameService = gameService;
@@ -21,7 +21,8 @@ public class GamesController {
     @GetMapping("/index")
     public String home(Model model) {
         if (games.isEmpty()) {
-            games = gameService.getGames();
+            games.addAll(gameService.getGames());
+            games.add(gameService.getGameByName("Cuphead"));
         }
         model.addAttribute("games", games);
         return "index";
