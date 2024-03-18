@@ -27,6 +27,18 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "users_games_played",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")})
+    private List<Game> playedGames = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "users_games_liked",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")})
+    private List<Game> likedGames = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -63,7 +75,41 @@ public class User {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public List<Game> getPlayedGames() {
+        return playedGames;
+    }
+
+    public void addPlayedGame(Game game) {
+        playedGames.add(game);
+    }
+
+    public List<Game> getLikedGames() {
+        return likedGames;
+    }
+
+    public void addLikedGame(Game game) {
+        likedGames.add(game);
+    }
+
+    public boolean hasPlayedGame(Game game) {
+        for (Game g : playedGames) {
+            if (g.getId().equals(game.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasLikedGame(Game game) {
+        for (Game g : likedGames) {
+            if (g.getId().equals(game.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

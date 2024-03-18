@@ -29,16 +29,18 @@ public class GameServiceImpl implements GameService {
         generateHeaders();
     }
 
+    @Override
     public List<Game> getGames() {
         List<IgdbGameResponse> igdbGames = getIgdbGames();
         return igdbGames == null ? null : igdbGames.stream().map(igdbGame ->
-                new Game(igdbGame.name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate))
+                new Game(igdbGame.id, igdbGame.name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate))
         ).collect(Collectors.toList());
     }
 
+    @Override
     public Game getGameByName(String name) {
         IgdbGameResponse igdbGame = getIgdbGameByName(name);
-        return igdbGame == null ? null : new Game(name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate));
+        return igdbGame == null ? null : new Game(igdbGame.id, igdbGame.name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate));
     }
 
     private String getCoverById(Long id) {
@@ -60,14 +62,14 @@ public class GameServiceImpl implements GameService {
     }
 
     private List<IgdbGameResponse> getIgdbGames() {
-        String body = "fields name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 11;";
+        String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 11;";
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
         return gameResponses == null ? null : List.of(gameResponses);
     }
 
     private IgdbGameResponse getIgdbGameByName(String name) {
-        String body = String.format("fields name, summary, cover, url, genres, first_release_date; where name = \"%s\";", name);
+        String body = String.format("fields id, name, summary, cover, url, genres, first_release_date; where name = \"%s\";", name);
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
         return gameResponses == null ? null : gameResponses[0];
@@ -91,7 +93,7 @@ public class GameServiceImpl implements GameService {
     private record IgdbCoverResponse(String url) {
     }
 
-    private record IgdbGameResponse(String name, String summary, Long cover, String url, List<Long> genres,
+    private record IgdbGameResponse(Long id, String name, String summary, Long cover, String url, List<Long> genres,
                                     @JsonProperty("first_release_date") Long releaseDate) {
     }
 

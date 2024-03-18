@@ -8,13 +8,12 @@ import java.util.List;
 @Table(name = "games")
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "text", nullable = false)
     private String summary;
 
     @Column(nullable = false)
@@ -32,11 +31,18 @@ public class Game {
     @Column(nullable = false)
     private int year;
 
+    @ManyToMany(mappedBy = "playedGames")
+    private List<User> playedBy;
+
+    @ManyToMany(mappedBy = "likedGames")
+    private List<User> likedBy;
+
     public Game() {
 
     }
 
-    public Game(String name, String summary, String cover, String url, List<Genre> genres, int year) {
+    public Game(Long id, String name, String summary, String cover, String url, List<Genre> genres, int year) {
+        this.id = id;
         this.name = name;
         this.summary = summary;
         this.cover = cover;
@@ -99,5 +105,21 @@ public class Game {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public List<User> getPlayedBy() {
+        return playedBy;
+    }
+
+    public void setPlayedBy(List<User> playedBy) {
+        this.playedBy = playedBy;
+    }
+
+    public List<User> getLikedBy() {
+        return likedBy;
+    }
+
+    public void setLikedBy(List<User> likedBy) {
+        this.likedBy = likedBy;
     }
 }

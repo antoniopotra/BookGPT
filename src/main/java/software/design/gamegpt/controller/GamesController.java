@@ -5,16 +5,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import software.design.gamegpt.model.Game;
 import software.design.gamegpt.service.GameService;
+import software.design.gamegpt.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class GamesController {
+    private final UserService userService;
     private final GameService gameService;
     private final List<Game> games = new ArrayList<>();
 
-    public GamesController(GameService gameService) {
+    public GamesController(UserService userService, GameService gameService) {
+        this.userService = userService;
         this.gameService = gameService;
     }
 
