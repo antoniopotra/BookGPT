@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .game-details {
+            margin-top: 50px;
+        }
+
+        .game-image {
+            max-width: 300px;
+        }
+
+        .game-info {
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .subtext {
+            color: #666;
+        }
+
+        .descriptions {
+            margin-top: 50px;
+        }
+
+        .icon {
+            font-size: 24px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .description-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .description.active {
+            font-weight: bold;
+        }
+
+        .description-content {
+            display: none;
+        }
+
+        .description-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a
+                            class="nav-link active"
+                            aria-current="page"
+                            th:href="@{/logout}"
+                    >Logout</a
+                    >
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<br/><br/>
+
+<div class="container game-details">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img th:src="${game.cover}" alt="Game Image"
+                 class="img-fluid game-image">
+        </div>
+        <div class="col-md-8">
+            <div class="game-info">
+                <h1 class="game-title" th:text="${game.name}"></h1>
+                <p class="subtext" th:text="${genres}"></p>
+                <p class="subtext"><a th:href="${game.url}">See on IGDB</a></p>
+                <div class="icons">
+                    <i th:if="${played}" class="fa fa-gamepad icon"
+                       th:onclick="|window.location.href='/handlePlay/' + ${game.id}|" style="color: #1194ff"></i>
+                    <i th:if="${!played}" class="fa fa-gamepad icon"
+                       th:onclick="|window.location.href='/handlePlay/' + ${game.id}|"></i>
+                    <i th:if="${liked}" class="fa fa-heart icon"
+                       th:onclick="|window.location.href='/handleLike/' + ${game.id}|" style="color: #be0b11"></i>
+                    <i th:if="${!liked}" class="fa fa-heart icon"
+                       th:onclick="|window.location.href='/handleLike/' + ${game.id}|"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container descriptions">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="description-container">
+                <div class="description description1 active">Summary</div>
+                <div class="description description2">AI-based suggestion</div>
+            </div>
+            <div class="description-content description-content1 active">
+                <p th:text="${game.summary}"></p>
+            </div>
+            <div class="description-content description-content2">
+                <p th:text="${game.summary}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const descriptions = document.querySelectorAll(".description");
+        const descriptionContents = document.querySelectorAll(".description-content");
+
+        descriptions.forEach(function (description, index) {
+            description.addEventListener("click", function () {
+                descriptions.forEach(function (desc) {
+                    desc.classList.remove("active");
+                });
+                descriptionContents.forEach(function (content) {
+                    content.classList.remove("active");
+                });
+                this.classList.add("active");
+                descriptionContents[index].classList.add("active");
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@ public class Game {
     @Column(nullable = false, unique = true)
     private String url;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "games_genres",
             joinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "genre_id", referencedColumnName = "id")})

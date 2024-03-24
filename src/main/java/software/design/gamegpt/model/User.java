@@ -21,19 +21,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_games_played",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")})
     private List<Game> playedGames = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_games_liked",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")})
@@ -71,45 +69,53 @@ public class User {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void addRole(Role role) {
-        roles.add(role);
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public List<Game> getPlayedGames() {
         return playedGames;
     }
 
+    public void setPlayedGames(List<Game> playedGames) {
+        this.playedGames = playedGames;
+    }
+
     public void addPlayedGame(Game game) {
         playedGames.add(game);
+    }
+
+    public void removePlayedGame(Game game) {
+        playedGames.removeIf(g -> g.getId().equals(game.getId()));
+        likedGames.removeIf(g -> g.getId().equals(game.getId()));
+    }
+
+    public boolean hasPlayedGame(Game game) {
+        return playedGames.stream().anyMatch(g -> g.getId().equals(game.getId()));
     }
 
     public List<Game> getLikedGames() {
         return likedGames;
     }
 
+    public void setLikedGames(List<Game> likedGames) {
+        this.likedGames = likedGames;
+    }
+
     public void addLikedGame(Game game) {
+        playedGames.add(game);
         likedGames.add(game);
     }
 
-    public boolean hasPlayedGame(Game game) {
-        for (Game g : playedGames) {
-            if (g.getId().equals(game.getId())) {
-                return true;
-            }
-        }
-        return false;
+    public void removeLikedGame(Game game) {
+        likedGames.removeIf(g -> g.getId().equals(game.getId()));
     }
 
     public boolean hasLikedGame(Game game) {
-        for (Game g : likedGames) {
-            if (g.getId().equals(game.getId())) {
-                return true;
-            }
-        }
-        return false;
+        return likedGames.stream().anyMatch(g -> g.getId().equals(game.getId()));
     }
 }

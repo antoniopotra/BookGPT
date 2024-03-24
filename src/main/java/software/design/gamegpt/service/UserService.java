@@ -14,11 +14,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    void addPlayedGame(User user, Game game);
+    void handlePlayedGame(User user, Game game);
 
-    void addLikedGame(User user, Game game);
-
-    void removePlayedGame(User user, Game game);
-
-    void removeLikedGame(User user, Game game);
+    void handleLikedGame(User user, Game game);
 }

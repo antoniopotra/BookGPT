@@ -31,9 +31,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/index").permitAll()
                         .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/users").hasRole("ADMIN")
+                        .requestMatchers("/index").authenticated()
+                        .requestMatchers("/game/**").authenticated()
+                        .requestMatchers("/handlePlay/**").authenticated()
+                        .requestMatchers("/handleLike/**").authenticated()
                 ).formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")

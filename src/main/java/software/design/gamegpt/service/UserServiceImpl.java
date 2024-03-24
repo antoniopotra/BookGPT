@@ -6,6 +6,7 @@ import software.design.gamegpt.model.Game;
 import software.design.gamegpt.model.Role;
 import software.design.gamegpt.model.User;
 import software.design.gamegpt.repository.GameRepository;
+import software.design.gamegpt.repository.GenreRepository;
 import software.design.gamegpt.repository.RoleRepository;
 import software.design.gamegpt.repository.UserRepository;
 
@@ -16,15 +17,18 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final GameRepository gameRepository;
+    private final GenreRepository genreRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            GameRepository gameRepository,
+                           GenreRepository genreRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.gameRepository = gameRepository;
+        this.genreRepository = genreRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,7 +40,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.addRole(role);
+        user.setRole(role);
         userRepository.save(user);
     }
 
@@ -56,39 +60,45 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addPlayedGame(User user, Game game) {
-        if (!user.hasPlayedGame(game)) {
-            if (!gameRepository.existsById(game.getId())) {
-                gameRepository.save(game);
-            }
-            userRepository.addPlayedGame(user.getId(), game.getId());
-        }
-    }
-
-    @Override
-    public void addLikedGame(User user, Game game) {
-        if (!user.hasLikedGame(game)) {
-            if (!gameRepository.existsById(game.getId())) {
-                gameRepository.save(game);
-            }
-            userRepository.addLikedGame(user.getId(), game.getId());
+    public void handlePlayedGame(User user, Game game) {
+        if (user.hasPlayedGame(game)) {
+            removePlayedGame(user, game);
+        } else {
             addPlayedGame(user, game);
         }
     }
 
     @Override
-    public void removePlayedGame(User user, Game game) {
-        if (user.hasPlayedGame(game)) {
-            userRepository.removePlayedGame(user.getId(), game.getId());
+    public void handleLikedGame(User user, Game game) {
+        if (user.hasLikedGame(game)) {
             removeLikedGame(user, game);
+        } else {
+            addLikedGame(user, game);
         }
     }
 
-    @Override
-    public void removeLikedGame(User user, Game game) {
-        if (user.hasLikedGame(game)) {
-            userRepository.removeLikedGame(user.getId(), game.getId());
-        }
+    private void addPlayedGame(User user, Game game) {
+        genreRepository.saveAll(game.getGenres());
+        gameRepository.save(game);
+        user.addPlayedGame(game);
+        userRepository.save(user);
+    }
+
+    private void addLikedGame(User user, Game game) {
+        genreRepository.saveAll(game.getGenres());
+        gameRepository.save(game);
+        user.addLikedGame(game);
+        userRepository.save(user);
+    }
+
+    private void removePlayedGame(User user, Game game) {
+        user.removePlayedGame(game);
+        userRepository.save(user);
+    }
+
+    private void removeLikedGame(User user, Game game) {
+        user.removeLikedGame(game);
+        userRepository.save(user);
     }
 
     private Role createRoles() {

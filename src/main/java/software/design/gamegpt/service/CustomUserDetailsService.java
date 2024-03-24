@@ -11,6 +11,7 @@ import software.design.gamegpt.model.User;
 import software.design.gamegpt.repository.UserRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(user.getUsername(),
                     user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles()));
+                    mapRolesToAuthorities(List.of(user.getRole())));
         } else {
             throw new UsernameNotFoundException("Invalid username or password.");
         }

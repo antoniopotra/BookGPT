@@ -2,8 +2,8 @@ package software.design.gamegpt.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import software.design.gamegpt.model.Game;
+import software.design.gamegpt.model.Genre;
 
 @Repository
-public interface GameRepository extends JpaRepository<Game, Long> {
+public interface GenreRepository extends JpaRepository<Genre, Long> {
 }

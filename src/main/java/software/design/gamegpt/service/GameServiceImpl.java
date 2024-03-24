@@ -62,7 +62,7 @@ public class GameServiceImpl implements GameService {
     }
 
     private List<IgdbGameResponse> getIgdbGames() {
-        String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 11;";
+        String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 12;";
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
         return gameResponses == null ? null : List.of(gameResponses);
