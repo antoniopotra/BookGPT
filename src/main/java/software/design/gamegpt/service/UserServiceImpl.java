@@ -63,6 +63,9 @@ public class UserServiceImpl implements UserService {
     public void handlePlayedGame(User user, Game game) {
         if (user.hasPlayedGame(game)) {
             removePlayedGame(user, game);
+            if (user.hasLikedGame(game)) {
+                removeLikedGame(user, game);
+            }
         } else {
             addPlayedGame(user, game);
         }
@@ -74,6 +77,9 @@ public class UserServiceImpl implements UserService {
             removeLikedGame(user, game);
         } else {
             addLikedGame(user, game);
+            if (!user.hasPlayedGame(game)) {
+                addPlayedGame(user, game);
+            }
         }
     }
 

@@ -91,7 +91,6 @@ public class User {
 
     public void removePlayedGame(Game game) {
         playedGames.removeIf(g -> g.getId().equals(game.getId()));
-        likedGames.removeIf(g -> g.getId().equals(game.getId()));
     }
 
     public boolean hasPlayedGame(Game game) {
@@ -107,7 +106,6 @@ public class User {
     }
 
     public void addLikedGame(Game game) {
-        playedGames.add(game);
         likedGames.add(game);
     }
 

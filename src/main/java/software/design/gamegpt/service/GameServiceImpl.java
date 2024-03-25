@@ -32,22 +32,24 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<Game> getGames() {
         List<IgdbGameResponse> igdbGames = getIgdbGames();
-        return igdbGames == null ? null : igdbGames.stream().map(igdbGame ->
-                new Game(igdbGame.id, igdbGame.name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate))
-        ).collect(Collectors.toList());
+        return igdbGames != null ? igdbGames.stream().map(this::igdbGameToGame).collect(Collectors.toList()) : null;
     }
 
     @Override
     public Game getGameByName(String name) {
         IgdbGameResponse igdbGame = getIgdbGameByName(name);
-        return igdbGame == null ? null : new Game(igdbGame.id, igdbGame.name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate));
+        return igdbGame != null ? igdbGameToGame(igdbGame) : null;
+    }
+
+    private Game igdbGameToGame(IgdbGameResponse igdbGame) {
+        return new Game(igdbGame.id, igdbGame.name, igdbGame.summary, getCoverById(igdbGame.cover), igdbGame.url, getGenresByIds(igdbGame.genres), TimeMapper.getYearFromUnixTime(igdbGame.releaseDate));
     }
 
     private String getCoverById(Long id) {
         RestTemplate restTemplate = new RestTemplate();
         String body = String.format("fields url; where id = %d;", id);
         IgdbCoverResponse[] coverResponses = restTemplate.postForObject(BASE_URL + "covers", new HttpEntity<>(body, headers), IgdbCoverResponse[].class);
-        return coverResponses == null ? null : "https:" + coverResponses[0].url.replace("t_thumb", "t_cover_big");
+        return coverResponses != null ? "https:" + coverResponses[0].url.replace("t_thumb", "t_cover_big") : null;
     }
 
     private List<Genre> getGenresByIds(List<Long> ids) {
@@ -58,21 +60,21 @@ public class GameServiceImpl implements GameService {
         RestTemplate restTemplate = new RestTemplate();
         String body = String.format("fields name; where id = %d;", id);
         Genre[] genres = restTemplate.postForObject(BASE_URL + "genres", new HttpEntity<>(body, headers), Genre[].class);
-        return genres == null ? null : genres[0];
+        return genres != null ? genres[0] : null;
     }
 
     private List<IgdbGameResponse> getIgdbGames() {
         String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 12;";
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-        return gameResponses == null ? null : List.of(gameResponses);
+        return gameResponses != null ? List.of(gameResponses) : null;
     }
 
     private IgdbGameResponse getIgdbGameByName(String name) {
         String body = String.format("fields id, name, summary, cover, url, genres, first_release_date; where name = \"%s\";", name);
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-        return gameResponses == null ? null : gameResponses[0];
+        return gameResponses != null ? gameResponses[0] : null;
     }
 
     private void generateHeaders() {
@@ -83,7 +85,7 @@ public class GameServiceImpl implements GameService {
     private void generateAccessToken() {
         RestTemplate restTemplate = new RestTemplate();
         IgdbAuthResponse authResponse = restTemplate.postForObject(buildAuthUrl(), null, IgdbAuthResponse.class);
-        accessToken = (authResponse == null ? null : authResponse.accessToken);
+        accessToken = (authResponse != null ? authResponse.accessToken : null);
     }
 
     private String buildAuthUrl() {

@@ -39,7 +39,7 @@ public class GameController {
     }
 
     @GetMapping("/game/{id}")
-    public String gamePage(@PathVariable Long id, Model model) {
+    public String loadDetailsPage(@PathVariable Long id, Model model) {
         Game game = games.get(id);
         String genreString = game.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", "));
         boolean played = getAuthenticatedUser().hasPlayedGame(game);
@@ -64,6 +64,18 @@ public class GameController {
         Game game = games.get(id);
         userService.handleLikedGame(getAuthenticatedUser(), game);
         return "redirect:/game/" + id;
+    }
+
+    @GetMapping("/played")
+    public String loadPlayedGames(Model model) {
+        model.addAttribute("games", getAuthenticatedUser().getPlayedGames());
+        return "played_games";
+    }
+
+    @GetMapping("/liked")
+    public String loadLikedGames(Model model) {
+        model.addAttribute("games", getAuthenticatedUser().getLikedGames());
+        return "liked_games";
     }
 
     private User getAuthenticatedUser() {

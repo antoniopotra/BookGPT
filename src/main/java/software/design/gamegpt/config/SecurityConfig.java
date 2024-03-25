@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/game/**").authenticated()
                         .requestMatchers("/handlePlay/**").authenticated()
                         .requestMatchers("/handleLike/**").authenticated()
+                        .requestMatchers("/played").authenticated()
+                        .requestMatchers("/liked").authenticated()
                 ).formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
