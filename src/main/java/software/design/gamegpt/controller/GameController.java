@@ -12,15 +12,12 @@ import software.design.gamegpt.model.User;
 import software.design.gamegpt.service.GameService;
 import software.design.gamegpt.service.UserService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
 public class GameController {
     private final UserService userService;
     private final GameService gameService;
-    private final Map<Long, Game> games = new HashMap<>();
 
     public GameController(UserService userService, GameService gameService) {
         this.userService = userService;
@@ -29,40 +26,32 @@ public class GameController {
 
     @GetMapping("/index")
     public String home(Model model) {
-        if (games.isEmpty()) {
-            gameService.getGames().forEach(game ->
-                    games.put(game.getId(), game)
-            );
-        }
-        model.addAttribute("games", games.values());
+        model.addAttribute("games", gameService.getShowcaseGames());
         return "index";
     }
 
     @GetMapping("/game/{id}")
     public String loadDetailsPage(@PathVariable Long id, Model model) {
-        Game game = games.get(id);
+        User user = getAuthenticatedUser();
+        Game game = gameService.getGameById(id);
         String genreString = game.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", "));
-        boolean played = getAuthenticatedUser().hasPlayedGame(game);
-        boolean liked = getAuthenticatedUser().hasLikedGame(game);
 
         model.addAttribute("game", game);
         model.addAttribute("genres", genreString);
-        model.addAttribute("played", played);
-        model.addAttribute("liked", liked);
+        model.addAttribute("played", user.hasPlayedGame(game));
+        model.addAttribute("liked", user.hasLikedGame(game));
         return "game";
     }
 
     @GetMapping("/handlePlay/{id}")
     public String handlePlayedGame(@PathVariable Long id) {
-        Game game = games.get(id);
-        userService.handlePlayedGame(getAuthenticatedUser(), game);
+        userService.handlePlayedGame(getAuthenticatedUser(), gameService.getGameById(id));
         return "redirect:/game/" + id;
     }
 
     @GetMapping("/handleLike/{id}")
     public String handleLikedGame(@PathVariable Long id) {
-        Game game = games.get(id);
-        userService.handleLikedGame(getAuthenticatedUser(), game);
+        userService.handleLikedGame(getAuthenticatedUser(), gameService.getGameById(id));
         return "redirect:/game/" + id;
     }
 

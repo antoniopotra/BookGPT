@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import software.design.gamegpt.model.Game;
 import software.design.gamegpt.model.Genre;
+import software.design.gamegpt.repository.GameRepository;
 import software.design.gamegpt.utils.TimeMapper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -20,8 +22,14 @@ public class GameServiceImpl implements GameService {
     private static final String CLIENT_SECRET = "u81l4fx55zjhmbzv580i119c2258bb";
     private static final String GRANT_TYPE = "client_credentials";
     private static final String BASE_URL = "https://api.igdb.com/v4/";
+    private final GameRepository gameRepository;
     private final HttpHeaders headers = new HttpHeaders();
+    private final List<Game> showcaseGames = new ArrayList<>();
     private String accessToken;
+
+    public GameServiceImpl(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+    }
 
     @PostConstruct
     private void init() {
@@ -30,15 +38,34 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Game> getGames() {
-        List<IgdbGameResponse> igdbGames = getIgdbGames();
-        return igdbGames != null ? igdbGames.stream().map(this::igdbGameToGame).collect(Collectors.toList()) : null;
+    public List<Game> getShowcaseGames() {
+        if (showcaseGames.isEmpty()) {
+            String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 12;";
+            RestTemplate restTemplate = new RestTemplate();
+            IgdbGameResponse[] igdbGames = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
+            if (igdbGames != null) {
+                showcaseGames.addAll(Arrays.stream(igdbGames).map(this::igdbGameToGame).toList());
+            }
+        }
+        return showcaseGames;
     }
 
     @Override
     public Game getGameByName(String name) {
-        IgdbGameResponse igdbGame = getIgdbGameByName(name);
-        return igdbGame != null ? igdbGameToGame(igdbGame) : null;
+        String body = String.format("fields id, name, summary, cover, url, genres, first_release_date; where id = \"%s\";", name);
+        RestTemplate restTemplate = new RestTemplate();
+        IgdbGameResponse[] igdbGames = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
+        return igdbGames != null ? igdbGameToGame(igdbGames[0]) : null;
+    }
+
+    @Override
+    public Game getGameById(Long id) {
+        for (Game game : showcaseGames) {
+            if (game.getId().equals(id)) {
+                return game;
+            }
+        }
+        return gameRepository.findById(id).orElse(null);
     }
 
     private Game igdbGameToGame(IgdbGameResponse igdbGame) {
@@ -53,7 +80,7 @@ public class GameServiceImpl implements GameService {
     }
 
     private List<Genre> getGenresByIds(List<Long> ids) {
-        return ids.stream().map(this::getGenreById).filter(Objects::nonNull).collect(Collectors.toList());
+        return ids.stream().map(this::getGenreById).filter(Objects::nonNull).toList();
     }
 
     private Genre getGenreById(Long id) {
@@ -63,23 +90,8 @@ public class GameServiceImpl implements GameService {
         return genres != null ? genres[0] : null;
     }
 
-    private List<IgdbGameResponse> getIgdbGames() {
-        String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 12;";
-        RestTemplate restTemplate = new RestTemplate();
-        IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-        return gameResponses != null ? List.of(gameResponses) : null;
-    }
-
-    private IgdbGameResponse getIgdbGameByName(String name) {
-        String body = String.format("fields id, name, summary, cover, url, genres, first_release_date; where name = \"%s\";", name);
-        RestTemplate restTemplate = new RestTemplate();
-        IgdbGameResponse[] gameResponses = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-        return gameResponses != null ? gameResponses[0] : null;
-    }
-
-    private void generateHeaders() {
-        headers.set("Client-ID", CLIENT_ID);
-        headers.set("Authorization", "Bearer " + accessToken);
+    private String buildAuthUrl() {
+        return String.format("https://id.twitch.tv/oauth2/token?client_id=%s&client_secret=%s&grant_type=%s", CLIENT_ID, CLIENT_SECRET, GRANT_TYPE);
     }
 
     private void generateAccessToken() {
@@ -88,8 +100,9 @@ public class GameServiceImpl implements GameService {
         accessToken = (authResponse != null ? authResponse.accessToken : null);
     }
 
-    private String buildAuthUrl() {
-        return String.format("https://id.twitch.tv/oauth2/token?client_id=%s&client_secret=%s&grant_type=%s", CLIENT_ID, CLIENT_SECRET, GRANT_TYPE);
+    private void generateHeaders() {
+        headers.set("Client-ID", CLIENT_ID);
+        headers.set("Authorization", "Bearer " + accessToken);
     }
 
     private record IgdbCoverResponse(String url) {

@@ -5,7 +5,9 @@ import software.design.gamegpt.model.Game;
 import java.util.List;
 
 public interface GameService {
-    List<Game> getGames();
+    List<Game> getShowcaseGames();
 
     Game getGameByName(String name);
+
+    Game getGameById(Long id);
 }
