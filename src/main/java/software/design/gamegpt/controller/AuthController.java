@@ -10,8 +10,6 @@ import software.design.gamegpt.model.User;
 import software.design.gamegpt.service.UserService;
 import software.design.gamegpt.utils.Validator;
 
-import java.util.List;
-
 @Controller
 public class AuthController {
     private final UserService userService;
@@ -24,8 +22,7 @@ public class AuthController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        User user = new User();
-        model.addAttribute("user", user);
+        model.addAttribute("user", new User());
         return "register";
     }
 
@@ -53,8 +50,7 @@ public class AuthController {
 
     @GetMapping("/users")
     public String users(Model model) {
-        List<User> users = userService.findAll();
-        model.addAttribute("users", users);
+        model.addAttribute("users", userService.findAll());
         return "users";
     }
 

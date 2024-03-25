@@ -9,55 +9,49 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
     />
+    <style>
+        .navbar-brand,
+        .nav-item {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .navbar-brand:hover {
+            color: #1194ff !important;
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
-
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
-        <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-        >
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a
-                            class="nav-link active"
-                            aria-current="page"
-                            th:href="@{/played}"
-                    >Played</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link active"
-                            aria-current="page"
-                            th:href="@{/liked}"
-                    >Liked</a
-                    >
-                </li>
-                <li class="nav-item">
-                    <a
-                            class="nav-link active"
-                            aria-current="page"
-                            th:href="@{/logout}"
-                    >Logout</a
-                    >
-                </li>
-            </ul>
+        <div class="d-flex align-items-center">
+            <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
+
+            <div class="d-flex">
+                <a class="nav-item" aria-current="page" th:href="@{/played}">Played</a>
+                <a class="nav-item" aria-current="page" th:href="@{/liked}">Liked</a>
+                <a class="nav-item" aria-current="page" th:href="@{/logout}">Logout</a>
+            </div>
         </div>
+
+        <form class="d-flex ml-auto" method="post" role="form" th:action="@{/search}">
+            <input type="search"
+                   class="form-control rounded"
+                   placeholder="Search"
+                   aria-label="Search"
+                   aria-describedby="search-addon"
+                   name="gameName"
+            />
+        </form>
     </div>
 </nav>
+
 <br/><br/>
+
 <div class="container">
     <div class="row">
         <h1 class="text-center">AI<span id="alternating"> for game recommendations.</span></h1>

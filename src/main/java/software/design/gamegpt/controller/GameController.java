@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import software.design.gamegpt.model.Game;
 import software.design.gamegpt.model.Genre;
 import software.design.gamegpt.model.User;
@@ -65,6 +67,11 @@ public class GameController {
     public String loadLikedGames(Model model) {
         model.addAttribute("games", getAuthenticatedUser().getLikedGames());
         return "liked_games";
+    }
+
+    @PostMapping("/search")
+    public String searchGame(@RequestParam("gameName") String name) {
+        return "redirect:/game/" + gameService.getGameByName(name).getId();
     }
 
     private User getAuthenticatedUser() {
