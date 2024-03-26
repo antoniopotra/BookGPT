@@ -11,12 +11,12 @@ import software.design.gamegpt.service.UserService;
 import software.design.gamegpt.utils.Validator;
 
 @Controller
-public class AuthController {
+public class UserController {
     private final UserService userService;
     private final Validator emailValidator = new Validator("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     private final Validator passwordValidator = new Validator("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*\\W).{8,}$");
 
-    public AuthController(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

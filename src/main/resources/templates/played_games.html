@@ -24,16 +24,18 @@
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
-
 <body>
+
 <nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <div class="d-flex align-items-center">
             <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
 
             <div class="d-flex">
-                <a class="nav-item" aria-current="page" th:href="@{/played}">Played</a>
+                <a class="nav-item" aria-current="page" th:href="@{/played}"
+                   style="color: #1194ff !important;">Played</a>
                 <a class="nav-item" aria-current="page" th:href="@{/liked}">Liked</a>
+                <a class="nav-item" aria-current="page" th:href="@{/recommendations}">Recommendations</a>
                 <a class="nav-item" aria-current="page" th:href="@{/logout}">Logout</a>
             </div>
         </div>
@@ -49,10 +51,16 @@
         </form>
     </div>
 </nav>
+
 <br/><br/>
+
 <div class="container">
     <div class="container-fluid">
         <div class="px-lg-4">
+            <div class="row py-4">
+                <h3>Games you played</h3>
+            </div>
+
             <div class="row">
                 <div th:each="game: ${games}" class="col-xl-2 col-lg-3 col-md-5 mb-3">
                     <div class="bg-white rounded shadow-sm">

@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("/played").authenticated()
                         .requestMatchers("/liked").authenticated()
                         .requestMatchers("/search").authenticated()
+                        .requestMatchers("/recommendations").authenticated()
                 ).formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")

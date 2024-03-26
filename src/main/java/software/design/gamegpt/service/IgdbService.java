@@ -4,7 +4,7 @@ import software.design.gamegpt.model.Game;
 
 import java.util.List;
 
-public interface GameService {
+public interface IgdbService {
     List<Game> getShowcaseGames();
 
     Game getGameByName(String name);

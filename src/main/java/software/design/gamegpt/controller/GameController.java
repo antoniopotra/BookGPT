@@ -11,37 +11,41 @@ import org.springframework.web.bind.annotation.RequestParam;
 import software.design.gamegpt.model.Game;
 import software.design.gamegpt.model.Genre;
 import software.design.gamegpt.model.User;
-import software.design.gamegpt.service.GameService;
+import software.design.gamegpt.service.IgdbService;
+import software.design.gamegpt.service.OpenaiService;
 import software.design.gamegpt.service.UserService;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 public class GameController {
     private final UserService userService;
-    private final GameService gameService;
+    private final IgdbService igdbService;
+    private final OpenaiService openaiService;
 
-    public GameController(UserService userService, GameService gameService) {
+    public GameController(UserService userService, IgdbService igdbService, OpenaiService openaiService) {
         this.userService = userService;
-        this.gameService = gameService;
+        this.igdbService = igdbService;
+        this.openaiService = openaiService;
     }
 
     @GetMapping("/index")
     public String home(Model model) {
-        model.addAttribute("games", gameService.getShowcaseGames());
+        model.addAttribute("games", igdbService.getShowcaseGames());
         return "index";
     }
 
     @GetMapping("/game/{id}")
     public String loadDetailsPage(@PathVariable Long id, Model model) {
-        fillGameDetails(getAuthenticatedUser(), gameService.getGameById(id), model);
+        fillGameDetails(getAuthenticatedUser(), igdbService.getGameById(id), model);
         return "game";
     }
 
     @GetMapping("/handlePlay/{id}")
     public String handlePlayedGame(@PathVariable Long id, Model model) {
         User user = getAuthenticatedUser();
-        Game game = gameService.getGameById(id);
+        Game game = igdbService.getGameById(id);
         userService.handlePlayedGame(user, game);
         fillGameDetails(user, game, model);
         return "game";
@@ -50,7 +54,7 @@ public class GameController {
     @GetMapping("/handleLike/{id}")
     public String handleLikedGame(@PathVariable Long id, Model model) {
         User user = getAuthenticatedUser();
-        Game game = gameService.getGameById(id);
+        Game game = igdbService.getGameById(id);
         userService.handleLikedGame(user, game);
         fillGameDetails(user, game, model);
         return "game";
@@ -70,8 +74,16 @@ public class GameController {
 
     @PostMapping("/search")
     public String searchGame(@RequestParam("gameName") String name, Model model) {
-        fillGameDetails(getAuthenticatedUser(), gameService.getGameByName(name), model);
+        fillGameDetails(getAuthenticatedUser(), igdbService.getGameByName(name), model);
         return "game";
+    }
+
+    @GetMapping("/recommendations")
+    public String generateRecommendations(Model model) {
+        List<String> gameNames = openaiService.getRecommendations(getAuthenticatedUser());
+        List<Game> games = gameNames.stream().map(igdbService::getGameByName).toList();
+        model.addAttribute("games", games);
+        return "recommendations";
     }
 
     private User getAuthenticatedUser() {
