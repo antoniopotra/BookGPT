@@ -34,27 +34,26 @@ public class GameController {
 
     @GetMapping("/game/{id}")
     public String loadDetailsPage(@PathVariable Long id, Model model) {
-        User user = getAuthenticatedUser();
-        Game game = gameService.getGameById(id);
-        String genreString = game.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", "));
-
-        model.addAttribute("game", game);
-        model.addAttribute("genres", genreString);
-        model.addAttribute("played", user.hasPlayedGame(game));
-        model.addAttribute("liked", user.hasLikedGame(game));
+        fillGameDetails(getAuthenticatedUser(), gameService.getGameById(id), model);
         return "game";
     }
 
     @GetMapping("/handlePlay/{id}")
-    public String handlePlayedGame(@PathVariable Long id) {
-        userService.handlePlayedGame(getAuthenticatedUser(), gameService.getGameById(id));
-        return "redirect:/game/" + id;
+    public String handlePlayedGame(@PathVariable Long id, Model model) {
+        User user = getAuthenticatedUser();
+        Game game = gameService.getGameById(id);
+        userService.handlePlayedGame(user, game);
+        fillGameDetails(user, game, model);
+        return "game";
     }
 
     @GetMapping("/handleLike/{id}")
-    public String handleLikedGame(@PathVariable Long id) {
-        userService.handleLikedGame(getAuthenticatedUser(), gameService.getGameById(id));
-        return "redirect:/game/" + id;
+    public String handleLikedGame(@PathVariable Long id, Model model) {
+        User user = getAuthenticatedUser();
+        Game game = gameService.getGameById(id);
+        userService.handleLikedGame(user, game);
+        fillGameDetails(user, game, model);
+        return "game";
     }
 
     @GetMapping("/played")
@@ -70,8 +69,9 @@ public class GameController {
     }
 
     @PostMapping("/search")
-    public String searchGame(@RequestParam("gameName") String name) {
-        return "redirect:/game/" + gameService.getGameByName(name).getId();
+    public String searchGame(@RequestParam("gameName") String name, Model model) {
+        fillGameDetails(getAuthenticatedUser(), gameService.getGameByName(name), model);
+        return "game";
     }
 
     private User getAuthenticatedUser() {
@@ -83,5 +83,14 @@ public class GameController {
             username = principal.toString();
         }
         return userService.findByUsername(username);
+    }
+
+    private void fillGameDetails(User user, Game game, Model model) {
+        String genreString = game.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", "));
+
+        model.addAttribute("game", game);
+        model.addAttribute("genres", genreString);
+        model.addAttribute("played", user.hasPlayedGame(game));
+        model.addAttribute("liked", user.hasLikedGame(game));
     }
 }

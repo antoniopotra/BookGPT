@@ -24,6 +24,7 @@ public class GameServiceImpl implements GameService {
     private final GenreRepository genreRepository;
     private final HttpHeaders headers = new HttpHeaders();
     private final List<Game> showcaseGames = new ArrayList<>();
+    private final Map<Long, Game> searchedGames = new HashMap<>();
     private String accessToken;
     private Game defaultGame = null;
 
@@ -41,15 +42,21 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Game> getShowcaseGames() {
-        if (showcaseGames.isEmpty()) {
-            String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 12;";
-            RestTemplate restTemplate = new RestTemplate();
-            IgdbGameResponse[] igdbGames = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-            if (igdbGames != null && igdbGames.length > 0) {
-                showcaseGames.addAll(Arrays.stream(igdbGames).map(this::igdbGameToGame).toList());
-            } else {
-                showcaseGames.add(defaultGame);
-            }
+        if (!showcaseGames.isEmpty()) {
+            return showcaseGames;
+        }
+
+        String body = "fields id, name, summary, cover, url, genres, first_release_date; where name != null & summary != null & cover != null & url != null & genres != null & first_release_date != null & rating >= 80 & rating_count >= 200; limit 12;";
+        RestTemplate restTemplate = new RestTemplate();
+        IgdbGameResponse[] igdbGames = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
+        if (igdbGames == null || igdbGames.length == 0) {
+            return List.of(defaultGame);
+        }
+
+        for (IgdbGameResponse igdbGame : igdbGames) {
+            Game game = igdbGameToGame(igdbGame);
+            showcaseGames.add(game);
+            searchedGames.put(game.getId(), game);
         }
         return showcaseGames;
     }
@@ -59,15 +66,20 @@ public class GameServiceImpl implements GameService {
         String body = String.format("fields id, name, summary, cover, url, genres, first_release_date; where name = \"%s\";", name);
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] igdbGames = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-        return igdbGames != null && igdbGames.length > 0 ? igdbGameToGame(igdbGames[0]) : defaultGame;
+        if (igdbGames == null || igdbGames.length == 0) {
+            return defaultGame;
+        }
+
+        Game game = igdbGameToGame(igdbGames[0]);
+        searchedGames.put(game.getId(), game);
+        return game;
     }
 
     @Override
     public Game getGameById(Long id) {
-        for (Game game : showcaseGames) {
-            if (game.getId().equals(id)) {
-                return game;
-            }
+        Game game = searchedGames.get(id);
+        if (game != null) {
+            return game;
         }
 
         Optional<Game> gameOpt = gameRepository.findById(id);
@@ -78,14 +90,13 @@ public class GameServiceImpl implements GameService {
         String body = String.format("fields id, name, summary, cover, url, genres, first_release_date; where id = %d;", id);
         RestTemplate restTemplate = new RestTemplate();
         IgdbGameResponse[] igdbGames = restTemplate.postForObject(BASE_URL + "games", new HttpEntity<>(body, headers), IgdbGameResponse[].class);
-        if (igdbGames != null && igdbGames.length > 0) {
-            Game game = igdbGameToGame(igdbGames[0]);
-            genreRepository.saveAll(game.getGenres());
-            gameRepository.save(game);
-            return game;
+        if (igdbGames == null || igdbGames.length == 0) {
+            return defaultGame;
         }
 
-        return defaultGame;
+        game = igdbGameToGame(igdbGames[0]);
+        searchedGames.put(game.getId(), game);
+        return game;
     }
 
     private void fetchDefaultGame() {
