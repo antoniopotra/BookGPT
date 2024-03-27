@@ -2,6 +2,7 @@ package software.design.gamegpt.service;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class OpenaiServiceImpl implements OpenaiService {
+    private static final String BASE_URL = "https://api.openai.com/v1/";
     private final HttpHeaders headers = new HttpHeaders();
     private final List<String> recommendations = new ArrayList<>();
+    @Value("${openai.api.key}")
+    private String openaiApiKey;
 
     @PostConstruct
     private void init() {
@@ -33,7 +37,7 @@ public class OpenaiServiceImpl implements OpenaiService {
 
         RestTemplate restTemplate = new RestTemplate();
         OpenaiRequest body = new OpenaiRequest(buildPrompt(user));
-        OpenaiResponse response = restTemplate.postForObject("https://api.openai.com/v1/chat/completions", new HttpEntity<>(body, headers), OpenaiResponse.class);
+        OpenaiResponse response = restTemplate.postForObject(BASE_URL + "chat/completions", new HttpEntity<>(body, headers), OpenaiResponse.class);
         if (response == null || response.choices.isEmpty()) {
             return List.of("There Is No Game");
         }
@@ -52,12 +56,12 @@ public class OpenaiServiceImpl implements OpenaiService {
         }
         String likedGamesString = user.getLikedGames().stream().map(Game::getName).collect(Collectors.joining(", "));
         String playedNotLikedString = playedNotLiked.stream().map(Game::getName).collect(Collectors.joining(", "));
-        return String.format("I like %s. Give me 6 recommendations, names only (no numbers), comma-separated list.", likedGamesString);
+        return String.format("I like %s. I already played %s. Give me 6 recommendations in a comma-separated list, no numbering.", likedGamesString, playedNotLikedString);
     }
 
     private void generateHeaders() {
         headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "Bearer YOUR_KEY");
+        headers.set("Authorization", "Bearer " + openaiApiKey);
     }
 
     private record OpenaiMessage(@JsonProperty("role") String role, @JsonProperty("content") String content) {

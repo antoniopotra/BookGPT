@@ -15,6 +15,7 @@ import software.design.gamegpt.service.IgdbService;
 import software.design.gamegpt.service.OpenaiService;
 import software.design.gamegpt.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,14 +75,17 @@ public class GameController {
 
     @PostMapping("/search")
     public String searchGame(@RequestParam("gameName") String name, Model model) {
-        fillGameDetails(getAuthenticatedUser(), igdbService.getGameByName(name), model);
-        return "game";
+        model.addAttribute("games", igdbService.getGamesByName(name));
+        return "search_results";
     }
 
     @GetMapping("/recommendations")
     public String generateRecommendations(Model model) {
         List<String> gameNames = openaiService.getRecommendations(getAuthenticatedUser());
-        List<Game> games = gameNames.stream().map(igdbService::getGameByName).toList();
+        List<Game> games = new ArrayList<>();
+        for (String gameName : gameNames) {
+            games.addAll(igdbService.getGamesByName(gameName));
+        }
         model.addAttribute("games", games);
         return "recommendations";
     }

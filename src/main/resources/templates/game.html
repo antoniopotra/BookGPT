@@ -115,8 +115,9 @@
         </div>
         <div class="col-md-8">
             <div class="game-info">
-                <h1 class="game-title" th:text="${game.name}"></h1>
+                <h1 class="game-title" th:text="${game.name} + ' (' + ${game.year} + ')'"></h1>
                 <p class="subtext" th:text="${genres}"></p>
+                <p class="subtext" th:text="${game.category}"></p>
                 <p class="subtext"><a th:href="${game.url}">See on IGDB</a></p>
                 <div class="icons">
                     <i th:if="${played}" class="fa fa-gamepad icon"

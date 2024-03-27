@@ -7,7 +7,7 @@ import java.util.List;
 public interface IgdbService {
     List<Game> getShowcaseGames();
 
-    Game getGameByName(String name);
+    List<Game> getGamesByName(String name);
 
     Game getGameById(Long id);
 }

@@ -10,7 +10,7 @@ public class Game {
     @Id
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(columnDefinition = "text", nullable = false)
@@ -31,6 +31,9 @@ public class Game {
     @Column(nullable = false)
     private int year;
 
+    @Column(nullable = false)
+    private String category;
+
     @ManyToMany(mappedBy = "playedGames")
     private List<User> playedBy;
 
@@ -41,7 +44,7 @@ public class Game {
 
     }
 
-    public Game(Long id, String name, String summary, String cover, String url, List<Genre> genres, int year) {
+    public Game(Long id, String name, String summary, String cover, String url, List<Genre> genres, int year, String category) {
         this.id = id;
         this.name = name;
         this.summary = summary;
@@ -49,6 +52,7 @@ public class Game {
         this.url = url;
         this.genres = genres;
         this.year = year;
+        this.category = category;
     }
 
     public Long getId() {
@@ -105,6 +109,14 @@ public class Game {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<User> getPlayedBy() {
