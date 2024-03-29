@@ -48,12 +48,6 @@ public class UserController {
         return "redirect:/register?success";
     }
 
-    @GetMapping("/users")
-    public String users(Model model) {
-        model.addAttribute("users", userService.findAll());
-        return "users";
-    }
-
     @GetMapping("/login")
     public String login() {
         return "login";

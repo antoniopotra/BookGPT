@@ -83,6 +83,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+
     private void addPlayedGame(User user, Game game) {
         genreRepository.saveAll(game.getGenres());
         gameRepository.save(game);

@@ -44,21 +44,15 @@ public class GameController {
     }
 
     @GetMapping("/handlePlay/{id}")
-    public String handlePlayedGame(@PathVariable Long id, Model model) {
-        User user = getAuthenticatedUser();
-        Game game = igdbService.getGameById(id);
-        userService.handlePlayedGame(user, game);
-        fillGameDetails(user, game, model);
-        return "game";
+    public String handlePlayedGame(@PathVariable Long id) {
+        userService.handlePlayedGame(getAuthenticatedUser(), igdbService.getGameById(id));
+        return "redirect:/game/" + id;
     }
 
     @GetMapping("/handleLike/{id}")
-    public String handleLikedGame(@PathVariable Long id, Model model) {
-        User user = getAuthenticatedUser();
-        Game game = igdbService.getGameById(id);
-        userService.handleLikedGame(user, game);
-        fillGameDetails(user, game, model);
-        return "game";
+    public String handleLikedGame(@PathVariable Long id) {
+        userService.handleLikedGame(getAuthenticatedUser(), igdbService.getGameById(id));
+        return "redirect:/game/" + id;
     }
 
     @GetMapping("/played")

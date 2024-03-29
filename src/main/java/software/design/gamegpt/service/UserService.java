@@ -17,4 +17,6 @@ public interface UserService {
     void handlePlayedGame(User user, Game game);
 
     void handleLikedGame(User user, Game game);
+
+    void deleteById(Long id);
 }

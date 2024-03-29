@@ -9,6 +9,7 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         .navbar-brand,
         .nav-item {
@@ -20,6 +21,11 @@
 
         .nav-item:hover, .navbar-brand:hover {
             color: #1194ff !important;
+        }
+
+        .icon {
+            cursor: pointer;
+            color: #be0b11;
         }
     </style>
 </head>
@@ -33,6 +39,7 @@
             <div class="d-flex">
                 <a class="nav-item" aria-current="page" th:href="@{/played}">Played</a>
                 <a class="nav-item" aria-current="page" th:href="@{/liked}">Liked</a>
+                <a class="nav-item" aria-current="page" th:href="@{/recommendations}">Recommendations</a>
                 <a class="nav-item" aria-current="page" th:href="@{/logout}">Logout</a>
             </div>
         </div>
@@ -48,24 +55,36 @@
         </form>
     </div>
 </nav>
+<br/><br/>
 <div class="container">
-    <div class="row col-md-10">
-        <h2>List of Registered Users</h2>
+    <div class="container-fluid">
+        <div class="px-lg-4">
+            <div class="row py-4">
+                <h3>List of Registered Users</h3>
+            </div>
+            <div class="row">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Admin</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.username}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.role.name.equals('ROLE_ADMIN')} ? 'YES' : 'NO'"></td>
+                        <td><i th:if="${user.role.name.equals('ROLE_USER')}" class="fa fa-trash icon"
+                               th:onclick="|window.location.href='/deleteUser/' + ${user.id}|"></i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <table class="table table-bordered table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.email}"></td>
-        </tr>
-        </tbody>
-    </table>
 </div>
 </body>
 </html>
