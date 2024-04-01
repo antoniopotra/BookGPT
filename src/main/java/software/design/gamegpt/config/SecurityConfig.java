@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/users").hasRole("ADMIN")
                         .requestMatchers("/deleteUser/**").hasRole("ADMIN")
+                        .requestMatchers("/upgrade").hasRole("USER")
+                        .requestMatchers("/confirm-upgrade").hasRole("USER")
                         .requestMatchers("/index").authenticated()
                         .requestMatchers("/game/**").authenticated()
                         .requestMatchers("/handlePlay/**").authenticated()

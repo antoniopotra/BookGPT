@@ -19,4 +19,6 @@ public interface UserService {
     void handleLikedGame(User user, Game game);
 
     void deleteById(Long id);
+
+    void updateRole(Long userId, String role);
 }

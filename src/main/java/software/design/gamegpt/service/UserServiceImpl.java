@@ -88,6 +88,11 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    @Override
+    public void updateRole(Long userId, String role) {
+        userRepository.updateRole(userId, roleRepository.findByName(role));
+    }
+
     private void addPlayedGame(User user, Game game) {
         genreRepository.saveAll(game.getGenres());
         gameRepository.save(game);
@@ -113,13 +118,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private Role createRoles() {
-        Role admin = new Role();
-        admin.setName("ROLE_ADMIN");
-        roleRepository.save(admin);
+        Role adminRole = new Role();
+        adminRole.setName("ROLE_ADMIN");
+        roleRepository.save(adminRole);
 
-        Role user = new Role();
-        user.setName("ROLE_USER");
-        roleRepository.save(user);
-        return user;
+        Role userRole = new Role();
+        userRole.setName("ROLE_USER");
+        roleRepository.save(userRole);
+        return userRole;
     }
 }
