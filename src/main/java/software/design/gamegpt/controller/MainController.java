@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-public class GameController {
+public class MainController {
     private final UserService userService;
     private final IgdbService igdbService;
     private final OpenaiService openaiService;
 
-    public GameController(UserService userService, IgdbService igdbService, OpenaiService openaiService) {
+    public MainController(UserService userService, IgdbService igdbService, OpenaiService openaiService) {
         this.userService = userService;
         this.igdbService = igdbService;
         this.openaiService = openaiService;

@@ -20,6 +20,7 @@ public class OpenaiServiceImpl implements OpenaiService {
     private static final String BASE_URL = "https://api.openai.com/v1/";
     private final HttpHeaders headers = new HttpHeaders();
     private final List<String> recommendations = new ArrayList<>();
+
     @Value("${openai.api.key}")
     private String openaiApiKey;
 
@@ -56,7 +57,7 @@ public class OpenaiServiceImpl implements OpenaiService {
         }
         String likedGamesString = user.getLikedGames().stream().map(Game::getName).collect(Collectors.joining(", "));
         String playedNotLikedString = playedNotLiked.stream().map(Game::getName).collect(Collectors.joining(", "));
-        return String.format("I like %s. I already played %s. Give me 6 recommendations in a comma-separated list, no numbering.", likedGamesString, playedNotLikedString);
+        return String.format("I like %s. I already played %s. Give me 6 recommendations in a comma-separated list. For example: game1, game2, game3", likedGamesString, playedNotLikedString);
     }
 
     private void generateHeaders() {

@@ -38,7 +38,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/users").hasRole("ADMIN")
                         .requestMatchers("/deleteUser/**").hasRole("ADMIN")
                         .requestMatchers("/upgrade").hasRole("USER")
@@ -51,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/liked").authenticated()
                         .requestMatchers("/search").authenticated()
                         .requestMatchers("/recommendations").authenticated()
+                        .requestMatchers("/register/**").permitAll()
                 ).formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")

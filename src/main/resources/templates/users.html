@@ -40,6 +40,7 @@
                 <a class="nav-item" aria-current="page" th:href="@{/played}">Played</a>
                 <a class="nav-item" aria-current="page" th:href="@{/liked}">Liked</a>
                 <a class="nav-item" aria-current="page" th:href="@{/recommendations}">Recommendations</a>
+                <a class="nav-item" aria-current="page" th:href="@{/users}" style="color: #1194ff">Users</a>
                 <a class="nav-item" aria-current="page" th:href="@{/logout}">Logout</a>
             </div>
         </div>
@@ -68,7 +69,7 @@
                     <tr>
                         <th>Username</th>
                         <th>Email</th>
-                        <th>Admin</th>
+                        <th>Role</th>
                         <th>Delete</th>
                     </tr>
                     </thead>
@@ -76,7 +77,7 @@
                     <tr th:each="user : ${users}">
                         <td th:text="${user.username}"></td>
                         <td th:text="${user.email}"></td>
-                        <td th:text="${user.role.name.equals('ROLE_ADMIN')} ? 'YES' : 'NO'"></td>
+                        <td th:text="${user.role.name.substring(5)}"></td>
                         <td><i th:if="${user.role.name.equals('ROLE_USER')}" class="fa fa-trash icon"
                                th:onclick="|window.location.href='/deleteUser/' + ${user.id}|"></i></td>
                     </tr>
