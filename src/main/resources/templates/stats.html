@@ -6,7 +6,7 @@
 >
   <head>
     <meta charset="UTF-8" />
-    <title>Home</title>
+    <title>Stats</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -28,14 +28,57 @@
       }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script type="text/javascript" th:inline="javascript">
+      google.charts.load('current', {'packages': ['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+          drawGenreChart();
+          drawYearChart();
+      }
+
+      function drawGenreChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Genre');
+          data.addColumn('number', 'Games');
+          data.addRows([[${genreStats}]]);
+
+          var options = {
+              'title': 'Stats by genre',
+              'width': 400,
+              'height': 300
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('genre-chart-span'));
+          chart.draw(data, options);
+      }
+
+      function drawYearChart() {
+          var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Year');
+          data.addColumn('number', 'Games');
+          data.addRows([[${yearStats}]]);
+
+          var options = {
+              'title': 'Stats by year',
+              'width': 400,
+              'height': 300
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('year-chart-span'));
+          chart.draw(data, options);
+      }
+    </script>
   </head>
   <body>
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
         <div class="d-flex align-items-center">
-          <a class="navbar-brand" th:href="@{/index}" style="color: #1194ff"
-            >GameGPT</a
-          >
+          <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
 
           <div class="d-flex">
             <a class="nav-item" aria-current="page" th:href="@{/played}"
@@ -50,7 +93,11 @@
               th:href="@{/recommendations}"
               >Recommendations</a
             >
-            <a class="nav-item" aria-current="page" th:href="@{/stats}"
+            <a
+              class="nav-item"
+              aria-current="page"
+              th:href="@{/stats}"
+              style="color: #1194ff"
               >Stats</a
             >
             <a class="nav-item" aria-current="page" th:href="@{/users}"
@@ -83,46 +130,18 @@
     <br /><br />
 
     <div class="container">
-      <div class="row">
-        <h1 class="text-center">
-          AI<span id="alternating"> for game recommendations.</span>
-        </h1>
-      </div>
       <div class="container-fluid">
         <div class="px-lg-4">
           <div class="row py-4">
-            <h3>Browse games</h3>
+            <h3>Stats</h3>
           </div>
 
           <div class="row">
-            <div
-              th:each="game: ${games}"
-              class="col-xl-2 col-lg-3 col-md-5 mb-3"
-            >
-              <div class="bg-white rounded shadow-sm">
-                <a th:href="@{'/game/' + ${game.id}}">
-                  <img
-                    th:src="${game.cover}"
-                    alt=""
-                    class="img-fluid card-img-top"
-                  />
-                </a>
-                <div class="p-3">
-                  <p th:text="${game.name}"></p>
-                </div>
-              </div>
-            </div>
+            <div id="genre-chart-span"></div>
+            <div id="year-chart-span"></div>
           </div>
         </div>
       </div>
     </div>
-
-    <script>
-      setTimeout(function () {
-        $("#alternating").fadeOut(function () {
-          $(this).html(", ce-aș juca ceva!").fadeIn();
-        });
-      }, 5000);
-    </script>
   </body>
 </html>

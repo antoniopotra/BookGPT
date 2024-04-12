@@ -15,8 +15,7 @@ import software.design.gamegpt.service.IgdbService;
 import software.design.gamegpt.service.OpenaiService;
 import software.design.gamegpt.service.UserService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -84,6 +83,36 @@ public class MainController {
         return "recommendations";
     }
 
+    @GetMapping("/stats")
+    public String generateStats(Model model) {
+        model.addAttribute("genreStats", generateStats(getAuthenticatedUser(), StatsFilter.GENRE));
+        model.addAttribute("yearStats", generateStats(getAuthenticatedUser(), StatsFilter.YEAR));
+        return "stats";
+    }
+
+    private List<List<Object>> generateStats(User user, StatsFilter filter) {
+        Map<String, Integer> count = new HashMap<>();
+
+        for (Game game : user.getPlayedGames()) {
+            switch (filter) {
+                case YEAR -> count.put(String.valueOf(game.getYear()),
+                        count.getOrDefault(String.valueOf(game.getYear()), 0) + 1);
+                case GENRE -> {
+                    for (Genre genre : game.getGenres()) {
+                        count.put(genre.getName(), count.getOrDefault(genre.getName(), 0) + 1);
+                    }
+                }
+            }
+        }
+
+        List<List<Object>> result = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : count.entrySet()) {
+            result.add(Arrays.asList(entry.getKey(), entry.getValue()));
+        }
+
+        return result;
+    }
+
     private User getAuthenticatedUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
@@ -102,5 +131,10 @@ public class MainController {
         model.addAttribute("genres", genreString);
         model.addAttribute("played", user.hasPlayedGame(game));
         model.addAttribute("liked", user.hasLikedGame(game));
+    }
+
+    private enum StatsFilter {
+        YEAR,
+        GENRE
     }
 }

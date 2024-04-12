@@ -26,15 +26,15 @@ public class User {
     private Role role;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_games_played",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")})
+    @JoinTable(name = "users_games_played", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {
+            @JoinColumn(name = "game_id", referencedColumnName = "id")})
     private List<Game> playedGames = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_games_liked",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "game_id", referencedColumnName = "id")})
+    @JoinTable(name = "users_games_liked", joinColumns = {
+            @JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {
+            @JoinColumn(name = "game_id", referencedColumnName = "id")})
     private List<Game> likedGames = new ArrayList<>();
 
     public Long getId() {

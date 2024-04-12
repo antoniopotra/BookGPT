@@ -50,16 +50,17 @@ public class SecurityConfig {
                         .requestMatchers("/liked").authenticated()
                         .requestMatchers("/search").authenticated()
                         .requestMatchers("/recommendations").authenticated()
-                        .requestMatchers("/register/**").permitAll()
-                ).formLogin(form -> form
+                        .requestMatchers("/stats").authenticated()
+                        .requestMatchers("/register/**").permitAll())
+                .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .defaultSuccessUrl("/index")
-                        .permitAll()
-                ).logout(logout -> logout
+                        .permitAll())
+                .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .permitAll()
-                ).exceptionHandling(exception -> exception.accessDeniedHandler(new CustomAccessDeniedHandler()));
+                        .permitAll())
+                .exceptionHandling(exception -> exception.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return http.build();
     }
 

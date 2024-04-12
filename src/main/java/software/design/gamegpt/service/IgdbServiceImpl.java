@@ -22,10 +22,13 @@ public class IgdbServiceImpl implements IgdbService {
     private final HttpHeaders headers = new HttpHeaders();
     private final List<Game> showcaseGames = new ArrayList<>();
     private final Map<Long, Game> gameTable = new HashMap<>();
+
     @Value("${igdb.client.id}")
     private String clientId;
+
     @Value("${igdb.client.secret}")
     private String clientSecret;
+
     private String accessToken;
     private Game defaultGame = null;
 

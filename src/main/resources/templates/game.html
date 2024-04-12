@@ -1,175 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title th:text="${game.name}"></title>
     <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-            crossorigin="anonymous"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
     <style>
-        .game-details {
-            margin-top: 50px;
-        }
+      .game-details {
+        margin-top: 50px;
+      }
 
-        .game-image {
-            max-width: 300px;
-        }
+      .game-image {
+        max-width: 300px;
+      }
 
-        .game-info {
-            text-align: center;
-        }
+      .game-info {
+        text-align: center;
+      }
 
-        .game-title {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+      .game-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
 
-        .subtext {
-            color: #666;
-        }
+      .subtext {
+        color: #666;
+      }
 
-        .descriptions {
-            margin-top: 50px;
-        }
+      .descriptions {
+        margin-top: 50px;
+      }
 
-        .icon {
-            font-size: 24px;
-            margin-right: 10px;
-            cursor: pointer;
-        }
+      .icon {
+        font-size: 24px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
 
-        .description-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+      .description-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
 
-        .description {
-            cursor: pointer;
-            margin: 0 10px;
-        }
+      .description {
+        cursor: pointer;
+        margin: 0 10px;
+      }
 
-        .description.active {
-            font-weight: bold;
-        }
+      .description.active {
+        font-weight: bold;
+      }
 
-        .description-content {
-            display: none;
-        }
+      .description-content {
+        display: none;
+      }
 
-        .description-content.active {
-            display: block;
-        }
+      .description-content.active {
+        display: block;
+      }
 
-        .navbar-brand, .nav-item {
-            color: white;
-            text-decoration: none;
-            margin-right: 15px;
-            cursor: pointer;
-        }
+      .navbar-brand,
+      .nav-item {
+        color: white;
+        text-decoration: none;
+        margin-right: 15px;
+        cursor: pointer;
+      }
 
-        .nav-item:hover, .navbar-brand:hover {
-            color: #1194ff !important;
-        }
+      .nav-item:hover,
+      .navbar-brand:hover {
+        color: #1194ff !important;
+      }
     </style>
-</head>
-<body>
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container-fluid">
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
         <div class="d-flex align-items-center">
-            <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
+          <a class="navbar-brand" th:href="@{/index}">GameGPT</a>
 
-            <div class="d-flex">
-                <a class="nav-item" aria-current="page" th:href="@{/played}">Played</a>
-                <a class="nav-item" aria-current="page" th:href="@{/liked}">Liked</a>
-                <a class="nav-item" aria-current="page" th:href="@{/recommendations}">Recommendations</a>
-                <a class="nav-item" aria-current="page" th:href="@{/users}">Users</a>
-                <a class="nav-item" aria-current="page" th:href="@{/logout}">Logout</a>
-            </div>
+          <div class="d-flex">
+            <a class="nav-item" aria-current="page" th:href="@{/played}"
+              >Played</a
+            >
+            <a class="nav-item" aria-current="page" th:href="@{/liked}"
+              >Liked</a
+            >
+            <a
+              class="nav-item"
+              aria-current="page"
+              th:href="@{/recommendations}"
+              >Recommendations</a
+            >
+            <a class="nav-item" aria-current="page" th:href="@{/stats}"
+              >Stats</a
+            >
+            <a class="nav-item" aria-current="page" th:href="@{/users}"
+              >Users</a
+            >
+            <a class="nav-item" aria-current="page" th:href="@{/logout}"
+              >Logout</a
+            >
+          </div>
         </div>
 
-        <form class="d-flex ml-auto" method="post" role="form" th:action="@{/search}">
-            <input type="search"
-                   class="form-control rounded"
-                   placeholder="Search"
-                   aria-label="Search"
-                   aria-describedby="search-addon"
-                   name="gameName"
-            />
+        <form
+          class="d-flex ml-auto"
+          method="post"
+          role="form"
+          th:action="@{/search}"
+        >
+          <input
+            type="search"
+            class="form-control rounded"
+            placeholder="Search"
+            aria-label="Search"
+            aria-describedby="search-addon"
+            name="gameName"
+          />
         </form>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<br/><br/>
+    <br /><br />
 
-<div class="container game-details">
-    <div class="row">
+    <div class="container game-details">
+      <div class="row">
         <div class="col-md-4 text-center">
-            <img th:src="${game.cover}" alt="Game Image"
-                 class="img-fluid game-image">
+          <img
+            th:src="${game.cover}"
+            alt="Game Image"
+            class="img-fluid game-image"
+          />
         </div>
         <div class="col-md-8">
-            <div class="game-info">
-                <h1 class="game-title" th:text="${game.name} + ' (' + ${game.year} + ')'"></h1>
-                <p class="subtext" th:text="${genres}"></p>
-                <p class="subtext" th:text="${game.category}"></p>
-                <p class="subtext"><a th:href="${game.url}">See on IGDB</a></p>
-                <div class="icons">
-                    <i th:if="${played}" class="fa fa-gamepad icon"
-                       th:onclick="|window.location.href='/handlePlay/' + ${game.id}|" style="color: #1194ff"></i>
-                    <i th:if="${!played}" class="fa fa-gamepad icon"
-                       th:onclick="|window.location.href='/handlePlay/' + ${game.id}|"></i>
-                    <i th:if="${liked}" class="fa fa-heart icon"
-                       th:onclick="|window.location.href='/handleLike/' + ${game.id}|" style="color: #be0b11"></i>
-                    <i th:if="${!liked}" class="fa fa-heart icon"
-                       th:onclick="|window.location.href='/handleLike/' + ${game.id}|"></i>
-                </div>
+          <div class="game-info">
+            <h1
+              class="game-title"
+              th:text="${game.name} + ' (' + ${game.year} + ')'"
+            ></h1>
+            <p class="subtext" th:text="${genres}"></p>
+            <p class="subtext" th:text="${game.category}"></p>
+            <p class="subtext"><a th:href="${game.url}">See on IGDB</a></p>
+            <div class="icons">
+              <i
+                th:if="${played}"
+                class="fa fa-gamepad icon"
+                th:onclick="|window.location.href='/handlePlay/' + ${game.id}|"
+                style="color: #1194ff"
+              ></i>
+              <i
+                th:if="${!played}"
+                class="fa fa-gamepad icon"
+                th:onclick="|window.location.href='/handlePlay/' + ${game.id}|"
+              ></i>
+              <i
+                th:if="${liked}"
+                class="fa fa-heart icon"
+                th:onclick="|window.location.href='/handleLike/' + ${game.id}|"
+                style="color: #be0b11"
+              ></i>
+              <i
+                th:if="${!liked}"
+                class="fa fa-heart icon"
+                th:onclick="|window.location.href='/handleLike/' + ${game.id}|"
+              ></i>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<div class="container descriptions">
-    <div class="row">
+    <div class="container descriptions">
+      <div class="row">
         <div class="col-md-12">
-            <div class="description-container">
-                <div class="description description1 active">Summary</div>
-                <div class="description description2">AI-based suggestion</div>
-            </div>
-            <div class="description-content description-content1 active">
-                <p th:text="${game.summary}"></p>
-            </div>
-            <div class="description-content description-content2">
-                <p th:text="${game.summary}"></p>
-            </div>
+          <div class="description-container">
+            <div class="description description1 active">Summary</div>
+            <div class="description description2">AI-based suggestion</div>
+          </div>
+          <div class="description-content description-content1 active">
+            <p th:text="${game.summary}"></p>
+          </div>
+          <div class="description-content description-content2">
+            <p th:text="${game.summary}"></p>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         const descriptions = document.querySelectorAll(".description");
-        const descriptionContents = document.querySelectorAll(".description-content");
+        const descriptionContents = document.querySelectorAll(
+          ".description-content"
+        );
 
         descriptions.forEach(function (description, index) {
-            description.addEventListener("click", function () {
-                descriptions.forEach(function (desc) {
-                    desc.classList.remove("active");
-                });
-                descriptionContents.forEach(function (content) {
-                    content.classList.remove("active");
-                });
-                this.classList.add("active");
-                descriptionContents[index].classList.add("active");
+          description.addEventListener("click", function () {
+            descriptions.forEach(function (desc) {
+              desc.classList.remove("active");
             });
+            descriptionContents.forEach(function (content) {
+              content.classList.remove("active");
+            });
+            this.classList.add("active");
+            descriptionContents[index].classList.add("active");
+          });
         });
-    });
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>
