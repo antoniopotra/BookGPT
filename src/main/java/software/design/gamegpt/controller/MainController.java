@@ -85,15 +85,17 @@ public class MainController {
 
     @GetMapping("/stats")
     public String generateStats(Model model) {
-        model.addAttribute("genreStats", generateStats(getAuthenticatedUser(), StatsFilter.GENRE));
-        model.addAttribute("yearStats", generateStats(getAuthenticatedUser(), StatsFilter.YEAR));
+        model.addAttribute("playedGenreStats", generateStats(getAuthenticatedUser().getPlayedGames(), StatsFilter.GENRE));
+        model.addAttribute("playedYearStats", generateStats(getAuthenticatedUser().getPlayedGames(), StatsFilter.YEAR));
+        model.addAttribute("likedGenreStats", generateStats(getAuthenticatedUser().getLikedGames(), StatsFilter.GENRE));
+        model.addAttribute("likedYearStats", generateStats(getAuthenticatedUser().getLikedGames(), StatsFilter.YEAR));
         return "stats";
     }
 
-    private List<List<Object>> generateStats(User user, StatsFilter filter) {
+    private List<List<Object>> generateStats(List<Game> games, StatsFilter filter) {
         Map<String, Integer> count = new HashMap<>();
 
-        for (Game game : user.getPlayedGames()) {
+        for (Game game : games) {
             switch (filter) {
                 case YEAR -> count.put(String.valueOf(game.getYear()),
                         count.getOrDefault(String.valueOf(game.getYear()), 0) + 1);

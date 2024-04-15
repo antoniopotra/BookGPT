@@ -37,15 +37,17 @@
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
-          drawGenreChart();
-          drawYearChart();
+          drawPlayedGenreChart();
+          drawPlayedYearStats()
+          drawLikedGenreChart();
+          drawLikedYearChart();
       }
 
-      function drawGenreChart() {
+      function drawPlayedGenreChart() {
           var data = new google.visualization.DataTable();
           data.addColumn('string', 'Genre');
           data.addColumn('number', 'Games');
-          data.addRows([[${genreStats}]]);
+          data.addRows([[${playedGenreStats}]]);
 
           var options = {
               'title': 'Stats by genre',
@@ -53,24 +55,56 @@
               'height': 300
           };
 
-          var chart = new google.visualization.PieChart(document.getElementById('genre-chart-span'));
+          var chart = new google.visualization.PieChart(document.getElementById('played-genre-stats'));
           chart.draw(data, options);
       }
 
-      function drawYearChart() {
-          var data = new google.visualization.DataTable();
-          data.addColumn('string', 'Year');
-          data.addColumn('number', 'Games');
-          data.addRows([[${yearStats}]]);
+      function drawPlayedYearStats() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Year');
+        data.addColumn('number', 'Games');
+        data.addRows([[${playedYearStats}]]);
 
-          var options = {
-              'title': 'Stats by year',
-              'width': 400,
-              'height': 300
-          };
+        var options = {
+          'title': 'Stats by year',
+          'width': 400,
+          'height': 300
+        };
 
-          var chart = new google.visualization.PieChart(document.getElementById('year-chart-span'));
-          chart.draw(data, options);
+        var chart = new google.visualization.PieChart(document.getElementById('played-year-stats'));
+        chart.draw(data, options);
+      }
+
+      function drawLikedGenreChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Genre');
+        data.addColumn('number', 'Games');
+        data.addRows([[${likedGenreStats}]]);
+
+        var options = {
+          'title': 'Stats by genre',
+          'width': 400,
+          'height': 300
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('liked-genre-stats'));
+        chart.draw(data, options);
+      }
+
+      function drawLikedYearChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Year');
+        data.addColumn('number', 'Games');
+        data.addRows([[${likedYearStats}]]);
+
+        var options = {
+          'title': 'Stats by year',
+          'width': 400,
+          'height': 300
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('liked-year-stats'));
+        chart.draw(data, options);
       }
     </script>
   </head>
@@ -133,12 +167,22 @@
       <div class="container-fluid">
         <div class="px-lg-4">
           <div class="row py-4">
-            <h3>Stats</h3>
+            <div class="col">
+              <h3>Stats for played games</h3>
+            </div>
+            <div class="col">
+              <h3>Stats for liked games</h3>
+            </div>
           </div>
-
           <div class="row">
-            <div id="genre-chart-span"></div>
-            <div id="year-chart-span"></div>
+            <div class="col">
+              <div id="played-genre-stats"></div>
+              <div id="played-year-stats"></div>
+            </div>
+            <div class="col">
+              <div id="liked-genre-stats"></div>
+              <div id="liked-year-stats"></div>
+            </div>
           </div>
         </div>
       </div>
