@@ -1,10 +1,14 @@
 package software.design.gamegpt.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -37,54 +41,6 @@ public class User {
             @JoinColumn(name = "game_id", referencedColumnName = "id")})
     private List<Game> likedGames = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public List<Game> getPlayedGames() {
-        return playedGames;
-    }
-
-    public void setPlayedGames(List<Game> playedGames) {
-        this.playedGames = playedGames;
-    }
-
     public void addPlayedGame(Game game) {
         playedGames.add(game);
     }
@@ -95,14 +51,6 @@ public class User {
 
     public boolean hasPlayedGame(Game game) {
         return playedGames.stream().anyMatch(g -> g.getId().equals(game.getId()));
-    }
-
-    public List<Game> getLikedGames() {
-        return likedGames;
-    }
-
-    public void setLikedGames(List<Game> likedGames) {
-        this.likedGames = likedGames;
     }
 
     public void addLikedGame(Game game) {
