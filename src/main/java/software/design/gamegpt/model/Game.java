@@ -45,7 +45,6 @@ public class Game {
     private List<User> likedBy;
 
     public Game() {
-
     }
 
     public Game(Long id, String name, String summary, String cover, String url, List<Genre> genres, int year, String category) {

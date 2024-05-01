@@ -1,40 +1,91 @@
 package software.design.gamegpt.controller;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import software.design.gamegpt.model.ConfirmationToken;
+import software.design.gamegpt.model.Game;
+import software.design.gamegpt.model.Genre;
 import software.design.gamegpt.model.User;
 import software.design.gamegpt.service.EmailService;
+import software.design.gamegpt.service.IgdbService;
+import software.design.gamegpt.service.OpenaiService;
 import software.design.gamegpt.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
     private final UserService userService;
     private final EmailService emailService;
+    private final IgdbService igdbService;
+    private final OpenaiService openaiService;
 
-    public UserController(UserService userService, EmailService emailService) {
+    public UserController(UserService userService, EmailService emailService, IgdbService igdbService, OpenaiService openaiService) {
         this.userService = userService;
         this.emailService = emailService;
+        this.igdbService = igdbService;
+        this.openaiService = openaiService;
+    }
+
+    @GetMapping("/game/{id}")
+    public String loadDetailsPage(@PathVariable Long id, Model model) {
+        fillGameDetails(userService.getAuthenticatedUser(), igdbService.getGameById(id), model);
+        return "game";
+    }
+
+    @GetMapping("/handlePlay/{id}")
+    public String handlePlayedGame(@PathVariable Long id) {
+        userService.handlePlayedGame(userService.getAuthenticatedUser(), igdbService.getGameById(id));
+        return "redirect:/game/" + id;
+    }
+
+    @GetMapping("/handleLike/{id}")
+    public String handleLikedGame(@PathVariable Long id) {
+        userService.handleLikedGame(userService.getAuthenticatedUser(), igdbService.getGameById(id));
+        return "redirect:/game/" + id;
+    }
+
+    @GetMapping("/played")
+    public String loadPlayedGames(Model model) {
+        model.addAttribute("games", userService.getAuthenticatedUser().getPlayedGames());
+        return "played_games";
+    }
+
+    @GetMapping("/liked")
+    public String loadLikedGames(Model model) {
+        model.addAttribute("games", userService.getAuthenticatedUser().getLikedGames());
+        return "liked_games";
+    }
+
+    @PostMapping("/search")
+    public String searchGame(@RequestParam("gameName") String name, Model model) {
+        model.addAttribute("games", igdbService.getGamesByName(name));
+        return "search_results";
+    }
+
+    @GetMapping("/recommendations")
+    public String generateRecommendations(Model model) {
+        List<String> gameNames = openaiService.getRecommendations(userService.getAuthenticatedUser());
+        List<Game> games = new ArrayList<>();
+        for (String gameName : gameNames) {
+            games.addAll(igdbService.getGamesByName(gameName));
+        }
+        model.addAttribute("games", games);
+        return "recommendations";
     }
 
     @GetMapping("/upgrade")
     public String requestRoleUpgrade() {
-        User user = getAuthenticatedUser();
+        User user = userService.getAuthenticatedUser();
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
 
         emailService.saveConfirmationToken(confirmationToken);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(user.getEmail());
-        mailMessage.setSubject("Become an admin!");
-        mailMessage.setText("To become an admin, please click here: http://localhost:8080/confirm-upgrade?token=" + confirmationToken.getConfirmationToken());
-        emailService.sendEmail(mailMessage);
+        String body = "To become an admin, please click here: http://localhost:8080/confirm-upgrade?token=" + confirmationToken.getConfirmationToken();
+        emailService.sendEmail(user.getEmail(), "Become an admin!", body);
 
         return "redirect:/index";
     }
@@ -52,14 +103,12 @@ public class UserController {
         return "redirect:/index";
     }
 
-    private User getAuthenticatedUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
-        if (principal instanceof UserDetails) {
-            username = ((UserDetails) principal).getUsername();
-        } else {
-            username = principal.toString();
-        }
-        return userService.findByUsername(username);
+    private void fillGameDetails(User user, Game game, Model model) {
+        String genreString = game.getGenres().stream().map(Genre::getName).collect(Collectors.joining(", "));
+
+        model.addAttribute("game", game);
+        model.addAttribute("genres", genreString);
+        model.addAttribute("played", user.hasPlayedGame(game));
+        model.addAttribute("liked", user.hasLikedGame(game));
     }
 }

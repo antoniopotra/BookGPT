@@ -19,8 +19,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
-    public void sendEmail(SimpleMailMessage email) {
-        javaMailSender.send(email);
+    public void sendEmail(String destination, String subject, String body) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(destination);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(body);
+        javaMailSender.send(mailMessage);
     }
 
     @Override

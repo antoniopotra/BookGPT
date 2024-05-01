@@ -20,6 +20,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * Spring Security configuration class
+ * features: password encoding, endpoint protection against unauthorized access
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -42,14 +46,14 @@ public class SecurityConfig {
                         .requestMatchers("/deleteUser/**").hasRole("ADMIN")
                         .requestMatchers("/upgrade").hasRole("USER")
                         .requestMatchers("/confirm-upgrade").hasRole("USER")
+                        .requestMatchers("/game/**").hasRole("USER")
+                        .requestMatchers("/handlePlay/**").hasRole("USER")
+                        .requestMatchers("/handleLike/**").hasRole("USER")
+                        .requestMatchers("/played").hasRole("USER")
+                        .requestMatchers("/liked").hasRole("USER")
+                        .requestMatchers("/search").hasRole("USER")
+                        .requestMatchers("/recommendations").hasRole("USER")
                         .requestMatchers("/index").authenticated()
-                        .requestMatchers("/game/**").authenticated()
-                        .requestMatchers("/handlePlay/**").authenticated()
-                        .requestMatchers("/handleLike/**").authenticated()
-                        .requestMatchers("/played").authenticated()
-                        .requestMatchers("/liked").authenticated()
-                        .requestMatchers("/search").authenticated()
-                        .requestMatchers("/recommendations").authenticated()
                         .requestMatchers("/stats").authenticated()
                         .requestMatchers("/register/**").permitAll())
                 .formLogin(form -> form
@@ -69,6 +73,9 @@ public class SecurityConfig {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
+    /**
+     * Custom error handler, it redirects to the index page if the user is not authorized to view an endpoint
+     */
     @Component
     private static class CustomAccessDeniedHandler implements AccessDeniedHandler {
         @Override

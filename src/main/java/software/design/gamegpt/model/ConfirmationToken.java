@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Model class used for safely upgrading the user account (regular user to admin) via tokens
+ */
 @Getter
 @Setter
 @Entity
@@ -26,7 +29,6 @@ public class ConfirmationToken {
     private User user;
 
     public ConfirmationToken() {
-
     }
 
     public ConfirmationToken(User user) {

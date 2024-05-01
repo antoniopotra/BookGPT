@@ -127,7 +127,7 @@ public class IgdbServiceImpl implements IgdbService {
         String cover = getCoverById(igdbGame.cover);
         List<Genre> genres = getGenresByIds(igdbGame.genres);
         int year = TimeMapper.getYearFromUnixTime(igdbGame.releaseDate);
-        String category = CategoryMapper.toCategoryString(igdbGame.category);
+        String category = CategoryMapper.getInstance().toCategoryString(igdbGame.category);
         return new Game(igdbGame.id, igdbGame.name, igdbGame.summary, cover, igdbGame.url, genres, year, category);
     }
 

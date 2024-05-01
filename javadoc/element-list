@@ -1,0 +1,7 @@
+software.design.gamegpt
+software.design.gamegpt.config
+software.design.gamegpt.controller
+software.design.gamegpt.model
+software.design.gamegpt.repository
+software.design.gamegpt.service
+software.design.gamegpt.utils

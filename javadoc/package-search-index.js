@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"software.design.gamegpt"},{"l":"software.design.gamegpt.config"},{"l":"software.design.gamegpt.controller"},{"l":"software.design.gamegpt.model"},{"l":"software.design.gamegpt.repository"},{"l":"software.design.gamegpt.service"},{"l":"software.design.gamegpt.utils"}];updateSearchResults();
